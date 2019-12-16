@@ -48,6 +48,21 @@ if exist ac_atom.bat (
 	echo ac_atom.bat does not exist.
 	echo made this.
 )
+if exist ac_bash.bat (
+	echo ac_bash.bat exists.
+) else (
+	echo git-bash >ac_bash.bat
+	echo ac_atom.bat does not exist.
+	echo made this.
+)
+if exist .gitignore (
+	echo .gitignore exists.
+) else (
+	echo .data/ >.gitignore
+	echo *.bat >.gitignore
+	echo .gitignore does not exist.
+	echo made this.
+)
 
 
 for /f "usebackq delims=" %%i in (`certutil -hashfile requirements.txt MD5 ^| find /v "CertUtil" ^| find /v "MD5"`) do set Hash=%%i
@@ -73,7 +88,7 @@ python -m pip install --upgrade pip & ^
 if "%Hash%" == "d41d8cd98f00b204e9800998ecf8427e" (
 	echo requirements.txt has no item.
 ) else (
-	echo requirements.txt has some imtems.
+	echo requirements.txt has some items.
 	python -m pip install -r ..\requirements.txt
 ) & ^
 echo all green. & ^
