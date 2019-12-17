@@ -33,9 +33,6 @@ if exist .data (
 	echo the .data folder does not exist.
 	echo make this.
 	md .data
-	echo #encoding:utf-8>test\test1.py
-	echo.>>test\test1.py
-	echo print("hello venv and you!")>>test\test1.py
 )
 if exist doc (
 	echo the doc folder exists.
@@ -50,6 +47,10 @@ if exist test (
 	echo the test folder does not exist.
 	echo make this.
 	md test
+	echo #encoding:utf-8>test\test1.py
+	echo.>>test\test1.py
+	echo print^(^"hello venv and you!^"^)>>test\test1.py
+	pause >nul
 )
 if exist requirements.txt (
 	echo requirements.txt exists.
@@ -94,6 +95,8 @@ if exist .data\.venv (
 	echo venv does not exist.
 	echo made this.
 	python -m venv .data\.venv
+	pushd .data\.venv\Lib\site-packages
+	popd
 )
 exit /b
 
@@ -116,6 +119,7 @@ if exist "ram-%Hash%.txt" (
 	echo requirements.txt is changed.
 	del /q ram-*.txt
 	type nul >"ram-%Hash%.txt"
+	pause >nul
 	call .venv\Scripts\activate
 	python -m pip freeze|xargs python -m pip uninstall -y
 	if "%Hash%" == "d41d8cd98f00b204e9800998ecf8427e" (
