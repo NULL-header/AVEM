@@ -33,6 +33,9 @@ if exist .data (
 	echo the .data folder does not exist.
 	echo make this.
 	md .data
+	echo #encoding:utf-8>test\test1.py
+	echo.>>test\test1.py
+	echo print("hello venv and you!")>>test\test1.py
 )
 if exist doc (
 	echo the doc folder exists.
@@ -81,7 +84,7 @@ if exist .gitignore (
 ) else (
 	type nul >.gitignore
 	echo /*.bat >.gitignore
-	echo /data/ >.gitignore
+	echo /.data/ >>.gitignore
 	echo .gitignore does not exist.
 	echo made this.
 )
@@ -113,15 +116,16 @@ if exist "ram-%Hash%.txt" (
 	echo requirements.txt is changed.
 	del /q ram-*.txt
 	type nul >"ram-%Hash%.txt"
+	call .venv\Scripts\activate
+	python -m pip freeze|xargs python -m pip uninstall -y
 	if "%Hash%" == "d41d8cd98f00b204e9800998ecf8427e" (
 		echo there is nothing in requirements.txt.
 	) else (
 		echo there are something package in requirements.txt
-		call .venv\Scripts\activate
 		python -m pip install --upgrade pip
 		python -m pip install -r ..\requirements.txt
-		deactivate
 	)
+	deactivate
 	echo all green.
 	pause >nul
 	exit
