@@ -1,3 +1,2 @@
-work/
-.data/
-test/
+/test/*
+!/test/*.bat
