@@ -33,9 +33,6 @@ if exist .data (
 	echo the .data folder does not exist.
 	echo make this.
 	md .data
-	echo #encoding:utf-8>test\test1.py
-	echo.>>test\test1.py
-	echo print("hello venv and you!")>>test\test1.py
 )
 if exist doc (
 	echo the doc folder exists.
@@ -50,6 +47,9 @@ if exist test (
 	echo the test folder does not exist.
 	echo make this.
 	md test
+	echo #encoding:utf-8>test\test1.py
+	echo.>>test\test1.py
+	echo print^(^"hello venv and you!^"^)>>test\test1.py
 )
 if exist requirements.txt (
 	echo requirements.txt exists.
@@ -94,6 +94,17 @@ if exist .data\.venv (
 	echo venv does not exist.
 	echo made this.
 	python -m venv .data\.venv
+	pushd .data\.venv\Lib\site-packages
+	echo import builtins>usercustomize.py
+	echo.>>usercustomize.py
+	echo __original = open>>usercustomize.py
+	echo def __open^(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None^):>>usercustomize.py
+	echo     if 'b' not in mode and not encoding:>>usercustomize.py
+	echo         encoding = 'utf-8'>>usercustomize.py
+	echo     return __original^(file, mode, buffering, encoding, errors, newline, closefd, opener^)>>usercustomize.py
+	echo.>>usercustomize.py
+	echo builtins.open = __open>>usercustomize.py
+	popd
 )
 exit /b
 
@@ -121,6 +132,7 @@ if exist "ram-%Hash%.txt" (
 	if "%Hash%" == "d41d8cd98f00b204e9800998ecf8427e" (
 		echo there is nothing in requirements.txt.
 	) else (
+		which python
 		echo there are something package in requirements.txt
 		python -m pip install --upgrade pip
 		python -m pip install -r ..\requirements.txt
