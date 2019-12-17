@@ -6,36 +6,12 @@ setlocal
 set fold=test
 set file=test1.py
 
-call :Generater
-call :MDChecker
-call :VEMaker
-
-echo all green.
-
-call .data\.venv\Scripts\activate
-
-pushd %fold%
-python %file%
-
-popd
-popd
-pause >nul
-deactivate
-exit
-
-
-rem ===subroutine===
-
-:Generater
 if exist .data (
 	echo the .data folder exists.
 ) else (
 	echo the .data folder does not exist.
 	echo make this.
 	md .data
-	echo #encoding:utf-8>test\test1.py
-	echo.>>test\test1.py
-	echo print("hello venv and you!")>>test\test1.py
 )
 if exist doc (
 	echo the doc folder exists.
@@ -83,52 +59,54 @@ if exist .gitignore (
 	echo .gitignore exists.
 ) else (
 	type nul >.gitignore
-	echo /*.bat >.gitignore
-	echo /.data/ >>.gitignore
+	echo *.bat >.gitignore
 	echo .gitignore does not exist.
 	echo made this.
 )
-if exist .data\.venv (
-	echo venv exists.
-) else (
-	echo venv does not exist.
-	echo made this.
-	python -m venv .data\.venv
-)
-exit /b
 
 
-
-:MDChecker
 for /f "usebackq delims=" %%i in (`certutil -hashfile requirements.txt MD5 ^| find /v "CertUtil" ^| find /v "MD5"`) do set Hash=%%i
 if "%Hash%" == "" (
 	set Hash=d41d8cd98f00b204e9800998ecf8427e
 )
-exit /b
 
-
-
-:VEMaker
 pushd .data
+
 if exist "ram-%Hash%.txt" (
-	echo requirements.txt is not changed.
+	echo venv was made.
 ) else (
-	echo requirements.txt is changed.
-	del /q ram-*.txt
-	type nul >"ram-%Hash%.txt"
-	call .venv\Scripts\activate
-	python -m pip freeze|xargs python -m pip uninstall -y
-	if "%Hash%" == "d41d8cd98f00b204e9800998ecf8427e" (
-		echo there is nothing in requirements.txt.
-	) else (
-		echo there are something package in requirements.txt
-		python -m pip install --upgrade pip
-		python -m pip install -r ..\requirements.txt
+	echo venv was not made.
+	echo meke this.
+	if exist .venv (
+		rd /q /s .venv
 	)
-	deactivate
-	echo all green.
-	pause >nul
-	exit
+	del /q ram-*.txt
+	echo %Hash% >"ram-%Hash%.txt"
+	python -m venv .venv
+	call .venv\Scripts\activate.bat & ^
+python -m pip install --upgrade pip & ^
+if "%Hash%" == "d41d8cd98f00b204e9800998ecf8427e" (
+	echo requirements.txt has no item.
+) else (
+	echo requirements.txt has some items.
+	python -m pip install -r ..\requirements.txt
+) & ^
+echo all green. & ^
+pause >nul & ^
+deactivate
 )
-popd
-exit /b
+
+call .venv\Scripts\activate.bat & ^
+echo all green. & ^
+echo. & ^
+echo ============================== & ^
+echo. & ^
+cd .. & ^
+cd %fold% & ^
+python %file% & ^
+echo. & ^
+echo ============================== & ^
+echo. & ^
+echo waker warked. & ^
+pause >nul & ^
+deactivate
